@@ -12,6 +12,6 @@ public class MainActivity extends AppCompatActivity
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Log.i("MainActivity","Girish");
+        Log.i("MainActivity","Girish 1");
     }
 }
