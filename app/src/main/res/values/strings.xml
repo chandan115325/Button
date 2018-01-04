@@ -1,3 +1,56 @@
 <resources>
-    <string name="app_name">WealthDoctor</string>
+    <string name="app_name">Otp-Pin-View</string>
+
+    <!--      OTP Activity string keywords    -->
+
+    <string name="otp_activity_otpTitle">Waiting to automatically detect an SMS sent to your mobile number</string>
+    <string name="otp_activity_otpEnter">Enter 4-digit OTP</string>
+    <string name="otp_activity_otpResendText">Didn\'t receive the code? </string>
+    <string name="otp_activity_otpResend">RESEND CODE</string>
+    <string name="otp_activity_mobile_number_textview">+91-9999999999</string>
+    <string name="otp_activity_submit">submit</string>
+
+    <!--      OTP ends here                         -->
+
+    <!--Login Activity Mobile number keywords    -->
+
+    <string name="login_activity_sign_up">Sign Up</string>
+    <string name="login_activity_country_code">+91</string>
+    <string name="login_activity_submit">Submit</string>
+    <string name="mobile_number">+91 </string>
+
+    <!--    -->
+
+    <!--RegistrationActivity strings keywords-->
+    <string name="activity_registration_registration_form">Registration Form</string>
+    <string name="activity_registration_first_name">First Name</string>
+    <string name="activity_registration_last_name">Last Name</string>
+    <string name="activity_registration_country">Country</string>
+    <string name="activity_registration_city">City</string>
+    <string name="activity_registration_sex">Sex</string>
+    <string name="activity_registration_submit">Submit</string>
+
+    <!---->
+
+    <!--Circular Button String keywords-->
+
+    <string name="Error">Error</string>
+    <string name="Complete">Complete</string>
+    <string name="Cancel">Cancel</string>
+    <string name="IndeterminateProgressSample">Indeterminate Progress Sample</string>
+    <string name="IntegerProgressSample">Integer Progress Sample</string>
+    <string name="StateChangeSample">State Change Sample</string>
+    <string name="ProgressPaddingSample">Progress Padding Sample</string>
+    <string name="CustomSelectorSample">Custom Selector Sample</string>
+    <string name="doProgress">DoProgress</string>
+    <string name="progress_amount">Progress completed :</string>
+
+    <array name="sample_list">
+        <item>@string/IndeterminateProgressSample</item>
+        <item>@string/IntegerProgressSample</item>
+        <item>@string/StateChangeSample</item>
+        <item>@string/ProgressPaddingSample</item>
+        <item>@string/CustomSelectorSample</item>
+    </array>
+    <!--         -->
 </resources>

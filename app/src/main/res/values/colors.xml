@@ -2,5 +2,53 @@
 <resources>
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#FF4081</color>
+    <color name="colorAccent">#000000</color>
+
+    <color name="black">#000000</color>
+
+
+
+    <!--Circular Button Color-->
+    <color name="colorButtonCompleteState">#212121</color>
+    <color name="colorProgressIndicatorBackground">#BBBBBB</color>
+    <color name="colorWhite">#FFFFFF</color>
+    <color name="colorStroke">#3b6cff</color>
+    <color name="colorRed">#ffcd0a51</color>
+    <color name="pb_red">#ffff4444</color>
+    <color name="pb_red_dark">#ffcd3a3a</color>
+    <color name="pb_green">#ff99cc00</color>
+    <color name="pb_green_dark">#ff6d9b00</color>
+    <color name="pb_white">@android:color/white</color>
+    <color name="pb_orange">@android:color/holo_orange_dark</color>
+    <color name="pb_grey">#ffdedede</color>
+
+    <!-- Login Activity colors -->
+
+    <color name="pb_blue">#3b6cff</color>
+    <color name="pb_blue_dark">#3b6cff</color>
+    <color name="login_screen_bg_color">#e1f5fe</color>
+    <color name="login_activity_country_code_textcolor">#000000</color>
+    <color name="login_activity_mobile_number_text_color">#000000</color>
+    <color name="login_activity_terms_and_conditions_textcolor">#000000</color>
+    <color name="login_activity_submit_color_indicator">#1a237e</color>
+    <color name="activity_otp_bg_color">#ffffff</color>
+
+    <!---->
+
+    <!-- OTPActivity colors-->
+    <color name="otp_activity_otpTitle_textcolor">#ffffff</color>
+    <color name="otp_activity_mobile_number_textcolor">#000000</color>
+    <color name="otp_activity_enter4digit_textcolor">#000000</color>
+    <color name="otp_activity_resendColor">#1a237e</color>
+    <color name="otp_activity_white">#ffffff</color>
+
+    <!---->
+
+    <!-- RegistrationActivity colors -->
+    <color name="activity_registration_RL_bg_color">#ffffff</color>
+    <color name="activity_registration_cardview_bg_color">#3b6cff</color>
+    <color name="activity_registration_close_color">#ffffff</color>
+    <color name="activity_registration_registrationform_textcolor">#ffffff</color>
+    <color name="activity_registration_textcolor">#ffffff</color>
+    <!---->
 </resources>

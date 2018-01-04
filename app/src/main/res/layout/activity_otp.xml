@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:clipChildren="false"
+    android:clipToPadding="false"
+    android:gravity="center_vertical"
+    android:orientation="vertical"
+
+
+    tools:context="com.wealthdoctor.otp.OTPActivity">
+
+
+    <RelativeLayout
+
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:weightSum="2">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:background="@drawable/background_gradient" />
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:background="@color/activity_otp_bg_color" />
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="@dimen/otp_activity_otp_logo_padding">
+
+            <ImageView
+                android:id="@+id/otp_image"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/otp_acitvity_logo_margin_bottom"
+                android:src="@drawable/otp_screen" />
+
+            <TextView
+                android:id="@+id/otp_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/otp_activity_otp_waiting_text_margin_bottom"
+                android:layout_marginTop="@dimen/otp_activity_otp_waiting_text_margin_top"
+                android:text="@string/otp_activity_otpTitle"
+                android:textAlignment="center"
+                android:textColor="@color/otp_activity_otpTitle_textcolor"
+                android:textSize="@dimen/otp_activity_otpWaitingText" />
+        </LinearLayout>
+
+        <ScrollView
+
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_marginTop="@dimen/otp_activity_scrollview_margin_top">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+
+                android:orientation="vertical"
+                android:weightSum="3.5">
+
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="@dimen/otp_activity_mobile_number_textview_margin_top"
+                    android:layout_weight=".5"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/mobile_number"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+
+                        android:text="@string/otp_activity_mobile_number_textview"
+                        android:textColor="@color/otp_activity_mobile_number_textcolor"
+                        android:textSize="@dimen/otp_activity_mobile_number_text_size"
+                        android:textStyle="bold" />
+
+                    <ImageView
+                        android:id="@+id/edit"
+                        android:layout_width="wrap_content"
+                        android:layout_height="@dimen/otp_activity_edit_height"
+                        android:layout_marginTop="@dimen/otp_activity_edit_margin_top"
+                        android:layout_toRightOf="@+id/mobile_number"
+                        android:layout_weight="1"
+                        android:src="@drawable/ic_edit" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/enter_otp"
+
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_marginBottom="@dimen/otp_activity_enterdigit_margin_bottom"
+                        android:text="@string/otp_activity_otpEnter"
+                        android:textColor="@color/otp_activity_enter4digit_textcolor" />
+
+                    <com.wealthdoctor.otp.OTPEditText
+                        android:id="@+id/txt_pin_entry"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/otp_activity_edittext_margin_top"
+                        android:cursorVisible="false"
+                        android:digits="1234567890"
+                        android:inputType="number"
+                        android:maxLength="4"
+                        android:paddingLeft="@dimen/otp_activity_otp_edittext_padding_left"
+                        android:paddingRight="@dimen/otp_activity_otp_edittext_padding_right"
+                        android:textIsSelectable="false"
+                        android:textSize="@dimen/otp_activity_otp_edittext_text_size">
+
+                        <requestFocus />
+
+                    </com.wealthdoctor.otp.OTPEditText>
+
+                    <RelativeLayout
+                        android:id="@+id/otp_resend"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_above="@+id/submit_otp"
+                        android:layout_centerHorizontal="true"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_marginBottom="@dimen/otp_activity_otp_edittext_margin_top"
+                        android:layout_weight="2">
+
+                        <TextView
+                            android:id="@+id/resend_otp_text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/otp_activity_otpResendText" />
+
+                        <TextView
+                            android:id="@+id/resend_otp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_toRightOf="@+id/resend_otp_text"
+                            android:text="@string/otp_activity_otpResend"
+                            android:textColor="@color/otp_activity_resendColor"
+                            android:textStyle="bold" />
+                    </RelativeLayout>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+
+        </ScrollView>
+
+
+        <ProgressBar
+            android:id="@+id/progress_view"
+            style="?android:attr/progressBarStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:indeterminate="false"
+            android:max="100"
+            android:minHeight="50dp"
+            android:minWidth="200dp"
+            android:progress="1"
+            android:visibility="gone" />
+
+        <Button
+            android:id="@+id/submit_otp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:layout_gravity="bottom"
+            android:background="@drawable/button_bg"
+            android:padding="15dp"
+            android:text="@string/otp_activity_submit"
+            android:textColor="@color/otp_activity_white" />
+    </RelativeLayout>
+
+</android.support.design.widget.CoordinatorLayout>
