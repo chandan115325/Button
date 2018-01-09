@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Otp-Pin-View</string>
+    <string name="app_name">Wealth Doctor</string>
 
     <!--      OTP Activity string keywords    -->
 
@@ -23,11 +23,11 @@
 
     <!--RegistrationActivity strings keywords-->
     <string name="activity_registration_registration_form">Registration Form</string>
-    <string name="activity_registration_first_name">First Name</string>
+    <string name="activity_registration_first_name"> Name</string>
     <string name="activity_registration_last_name">Last Name</string>
-    <string name="activity_registration_country">Country</string>
+    <string name="activity_registration_country">State</string>
     <string name="activity_registration_city">City</string>
-    <string name="activity_registration_sex">Sex</string>
+    <string name="activity_registration_sex">Gender</string>
     <string name="activity_registration_submit">Submit</string>
 
     <!---->

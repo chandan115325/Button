@@ -79,5 +79,6 @@
     <dimen name="activity_registration_text_input_layout_margin">8dp</dimen>
     <dimen name="activity_registration_text_input_layout_edittext_padding">8dp</dimen>
     <dimen name="activity_registration_button_LL_margin_top">16dp</dimen>
+    <dimen name="spacing_medium">16dp</dimen>
     <!---->
 </resources>

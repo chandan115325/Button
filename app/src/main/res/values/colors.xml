@@ -9,18 +9,20 @@
 
 
     <!--Circular Button Color-->
-    <color name="colorButtonCompleteState">#212121</color>
+    <color name="colorButtonCompleteState">#ffffff</color>
     <color name="colorProgressIndicatorBackground">#BBBBBB</color>
     <color name="colorWhite">#FFFFFF</color>
-    <color name="colorStroke">#3b6cff</color>
+    <color name="colorStroke">#ffffff</color>
     <color name="colorRed">#ffcd0a51</color>
     <color name="pb_red">#ffff4444</color>
     <color name="pb_red_dark">#ffcd3a3a</color>
     <color name="pb_green">#ff99cc00</color>
     <color name="pb_green_dark">#ff6d9b00</color>
-    <color name="pb_white">@android:color/white</color>
+    <color name="pb_white">#ffffff</color>
     <color name="pb_orange">@android:color/holo_orange_dark</color>
-    <color name="pb_grey">#ffdedede</color>
+
+    <!-- Progress bar button color-->
+    <color name="pb_grey">#3b6cff</color>
 
     <!-- Login Activity colors -->
 

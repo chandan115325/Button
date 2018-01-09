@@ -137,7 +137,7 @@
                         android:textIsSelectable="false"
                         android:textSize="@dimen/otp_activity_otp_edittext_text_size">
 
-                        <requestFocus />
+                        <requestFocus/>
 
                     </com.wealthdoctor.otp.OTPEditText>
 
@@ -171,7 +171,7 @@
 
             </LinearLayout>
 
-
+        <requestFocus/>
         </ScrollView>
 
 

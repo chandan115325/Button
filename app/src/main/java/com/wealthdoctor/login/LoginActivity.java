@@ -7,21 +7,32 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.telephony.TelephonyManager;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.JsonElement;
 import com.wealthdoctor.R;
+import com.wealthdoctor.circularButton.CircularProgressButton;
 import com.wealthdoctor.otp.OTPActivity;
-import com.wealthdoctor.service.repository.ProjectRepository;
+import com.wealthdoctor.service.retrofit_services.Client;
+import com.wealthdoctor.service.retrofit_services.InterfaceApi;
 
 import java.util.HashMap;
 import java.util.Map;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class LoginActivity extends AppCompatActivity
-        implements ActivityCompat.OnRequestPermissionsResultCallback {
+        implements ActivityCompat.OnRequestPermissionsResultCallback, View.OnClickListener, View.OnKeyListener {
 
     public static final String TAG = "LoginActivity";
 
@@ -29,7 +40,7 @@ public class LoginActivity extends AppCompatActivity
 
     public static final String MOBILE_NUMBER = "mobile number";
 
-    private String userMobileNumber;
+    public static String userMobileNumber;
 
     private String userCountryCode;
 
@@ -37,17 +48,31 @@ public class LoginActivity extends AppCompatActivity
 
     private TextInputEditText mobileNumberEditText;
 
-    private ProjectRepository projectRepository = ProjectRepository.getInstance();
+    // private ProjectRepository projectRepository = ProjectRepository.getInstance();
 
     private Map<String, String> mobileData;
 
     private static final int PERMISSION_REQUEST_SMS = 0;
 
-    private static  final int PERMISSION_REQUEST_READ_PHONE_STATE = 1;
+    private static final int PERMISSION_REQUEST_READ_PHONE_STATE = 1;
 
     private View mLayout;
 
-    private String deviceID;
+    public static String deviceID;
+
+
+    private Button submitButton;
+
+    private CircularProgressButton circularProgressButton;
+    private int progress = 0;
+    private TextView percentageTV, progressAmountTV;
+    public static final int sweepDuration = 5000;
+    private static final String MANUAL_PROGRESS_AMOUNT_KEY = "manualProgressAmount";
+    private static final String FIXED_PROGRESS_PERCENTAGE_KEY = "fixedTimeProgressPercentage";
+    private static final String CONFIGURATION_CHANGE_KEY = "configurationChange";
+    private int fixedTimeProgressPercentage = 0;
+    private boolean hasConfigurarationChanged = false;
+    private String response;
 
     TelephonyManager telephonyManager;
 
@@ -57,10 +82,14 @@ public class LoginActivity extends AppCompatActivity
         setContentView(R.layout.activity_login);
         Log.i("LoginActivity", "Giris1");
 
+        //submitButton = (Button)findViewById(R.id.submitButton);
+
         countryCodeEditText = (TextInputEditText) findViewById(R.id.country_code_edittext);
         mobileNumberEditText = (TextInputEditText) findViewById(R.id.mobile_number_edittext);
         mLayout = findViewById(R.id.activity_main);
 
+        // Circular button initialization
+        circularProgressButton = (CircularProgressButton) findViewById(R.id.circularButton);
         //userCountryCode = countryCodeEditText.
         //permissionToDrawOverlays();
 
@@ -73,7 +102,6 @@ public class LoginActivity extends AppCompatActivity
     }
 
 
-
     /**
      * submit method to send the mobile number to the server to get the OTP response.
      *
@@ -81,24 +109,28 @@ public class LoginActivity extends AppCompatActivity
      */
     public void submit(View view) {
 
+
         userCountryCode = countryCodeEditText.getText().toString();
         userMobileNumber = mobileNumberEditText.getText().toString();
-        if (userMobileNumber.length() == 10) {
 
+
+        if ((userMobileNumber.length() == 10)) {
+            circularProgressButton.setIndeterminateProgressMode(true);
+            circularProgressButton.setStrokeColor(ContextCompat.getColor(this, R.color.colorStroke));
+            if (circularProgressButton.isIdle()) {
+                circularProgressButton.showProgress();
+            } /*else if (circularProgressButton.isErrorOrCompleteOrCancelled()) {
+            // circularProgressButton.showIdle();
+        } else if (circularProgressButton.isProgress()) {
+            //circularProgressButton.showCancel();
+        }*/
             mobileData = new HashMap<>();
-            mobileData.put("mobile number", userMobileNumber);
-            mobileData.put("device id", deviceID);
+            // mobileData.put("mobile_number", userMobileNumber);
+            //mobileData.put("device_id", deviceID);
+            loadJSON();
 
-            String response = projectRepository.get_all_articles(mobileData, requestCode);
-            if (response != null) {
-                Toast.makeText(LoginActivity.this, response, Toast.LENGTH_LONG).show();
-                showOTPScreen();
-
-            } else {
-                Toast.makeText(LoginActivity.this, response, Toast.LENGTH_LONG).show();
-            }
         } else {
-            Toast.makeText(LoginActivity.this, "Invalid Mobile Number ", Toast.LENGTH_LONG).show();
+            Toast.makeText(LoginActivity.this, "Invalid Mobile Number ", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -112,21 +144,13 @@ public class LoginActivity extends AppCompatActivity
         if (requestCode == PERMISSION_REQUEST_SMS) {
             // Request for SMS permission.
             if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                // Permission has been granted. Start camera preview Activity.
-         /*       Snackbar.make(mLayout, "SMS receiving permission was granted. .",
-                        Snackbar.LENGTH_SHORT)
-                        .show();
-         */
+
                 startOTPActivity();
 
             } else {
                 // Permission request was denied.
                 startOTPActivity();
-/*
-                Snackbar.make(mLayout, "SMS receiving permission request was denied.",
-                        Snackbar.LENGTH_SHORT)
-                        .show();
-*/
+
             }
         }
 
@@ -155,10 +179,11 @@ public class LoginActivity extends AppCompatActivity
     private void requestSMSSendingPermission() {
         ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.RECEIVE_SMS},
                 PERMISSION_REQUEST_SMS);
+
     }
 
     private void startOTPActivity() {
-
+        circularProgressButton.setVisibility(View.INVISIBLE);
         Intent intent = new Intent(this, OTPActivity.class);
         intent.putExtra(MOBILE_NUMBER, userMobileNumber);
         startActivity(intent);
@@ -175,34 +200,48 @@ public class LoginActivity extends AppCompatActivity
         super.onBackPressed();
     }
 
-   /* public final static int PERM_REQUEST_CODE_DRAW_OVERLAYS = 1234;
-    *//**
-     * Permission to draw Overlays/On Other Apps, related to 'android.permission.SYSTEM_ALERT_WINDOW' in Manifest
-     * Resolves issue of popup in Android M and above "Screen overlay detected- To change this permission setting you first have to turn off the screen overlay from Settings > Apps"
-     * If app has not been granted permission to draw on the screen, create an Intent &
-     * set its destination to Settings.ACTION_MANAGE_OVERLAY_PERMISSION &
-     * add a URI in the form of "package:<package name>" to send users directly to your app's page.
-     * Note: Alternative Ignore URI to send user to the full list of apps.
-     *//*
-    public void permissionToDrawOverlays() {
-        if (android.os.Build.VERSION.SDK_INT >= 23) {   //Android M Or Over
-            if (!Settings.canDrawOverlays(this)) {
-                Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:" + getPackageName()));
-                startActivityForResult(intent, PERM_REQUEST_CODE_DRAW_OVERLAYS);
-            }
+    @Override
+    public void onClick(View view) {
+
+    }
+
+    @Override
+    public boolean onKey(View view, int i, KeyEvent keyEvent) {
+        return false;
+    }
+
+    public void loadJSON() {
+
+        try {
+
+
+            Client Client = new Client();
+            InterfaceApi apiService =
+                    Client.getClient().create(InterfaceApi.class);
+            Call<JsonElement> call = apiService.getOTP(mobileData);
+            call.enqueue(new Callback<JsonElement>() {
+                @Override
+                public void onResponse(Call<JsonElement> call, Response<JsonElement> response) {
+
+                    // part=id,snippet&maxResults=20&channelId=UCCq1xDJMBRF61kiOgU90_kw&key=AIzaSyBRLPDbLkFnmUv13B-Hq9rmf0y7q8HOaVs
+                    showOTPScreen();
+                    Toast.makeText(LoginActivity.this, response.body().toString(), Toast.LENGTH_LONG).show();
+                    Log.d("LoginActivity", response.body().toString());
+
+                }
+
+                @Override
+                public void onFailure(Call<JsonElement> call, Throwable t) {
+                    //Log.d("Error", t.getMessage());
+                    Toast.makeText(LoginActivity.this, t.getMessage(), Toast.LENGTH_LONG).show();
+
+
+                }
+            });
+        } catch (Exception e) {
+            Log.d("Error", e.getMessage());
+            Toast.makeText(LoginActivity.this, e.toString(), Toast.LENGTH_LONG).show();
         }
     }
 
-//3. ------------- Called on the activity, to check on the results returned of the user action within the settings
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == PERM_REQUEST_CODE_DRAW_OVERLAYS) {
-            if (android.os.Build.VERSION.SDK_INT >= 23) {   //Android M Or Over
-                if (!Settings.canDrawOverlays(this)) {
-                    // ADD UI FOR USER TO KNOW THAT UI for SYSTEM_ALERT_WINDOW permission was not granted earlier...
-                }
-            }
-        }
-    }
-*/
 }
