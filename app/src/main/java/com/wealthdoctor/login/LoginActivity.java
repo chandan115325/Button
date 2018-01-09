@@ -244,4 +244,9 @@ public class LoginActivity extends AppCompatActivity
         }
     }
 
+    @Override
+    protected void onPause() {
+       // circularProgressButton.setVisibility(View.GONE);
+        super.onPause();
+    }
 }
