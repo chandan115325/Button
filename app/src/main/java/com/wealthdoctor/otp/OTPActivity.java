@@ -6,11 +6,12 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.provider.ContactsContract;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.LocalBroadcastManager;
@@ -18,22 +19,23 @@ import android.support.v7.app.AppCompatActivity;
 import android.telephony.SmsMessage;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.wealthdoctor.R;
-import com.wealthdoctor.service.retrofit_services.Client;
-import com.wealthdoctor.service.retrofit_services.InterfaceApi;
 import com.wealthdoctor.login.LoginActivity;
 import com.wealthdoctor.registration.RegistrationActivity;
+import com.wealthdoctor.service.retrofit_services.Client;
+import com.wealthdoctor.service.retrofit_services.InterfaceApi;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -49,44 +51,23 @@ import retrofit2.Response;
 public class OTPActivity extends AppCompatActivity implements View.OnKeyListener, View.OnClickListener {
 
     private ProgressBar progressbar;
-
     private TextView updateProgressBar;
-
     private int progressCount;
-
     Dialog myDialog;
-
-    private Handler progressHandler = new Handler();
-
     private String mobileNumber;
-
     private TextView mobileNumberText;
-
     private String otpCode;
-
     private Map<String, String> otpRequest;
-
-    //private ProjectRepository projectRepository = ProjectRepository.getInstance();
-
     public static String appVersion;
-
     private String mobileModel;
-
     private Cursor cursor;
-
     private String name, phonenumber, email;
-
     private JsonObject StoreContacts = new JsonObject();
-
     private JSONArray json_array = new JSONArray();
-
     public static final int RequestPermissionCode = 1;
-
     ContactListTask contactList = new ContactListTask();
-
+    private String user_device_details;
     private String deviceName;
-
-    String json;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -107,6 +88,7 @@ public class OTPActivity extends AppCompatActivity implements View.OnKeyListener
         submitButton.setOnClickListener(this);
 
         contactList();
+        getDeviceDetails();
 
 
         final OTPEditText txtPinEntry = (OTPEditText) findViewById(R.id.txt_pin_entry);
@@ -158,28 +140,17 @@ public class OTPActivity extends AppCompatActivity implements View.OnKeyListener
 
         otpRequest = new HashMap<>();
 
-
-        /*otpRequest.put("otp_number", otpCode);
-        otpRequest.put("version_", appVersion);
+        //TODO to put all the details and information in map.
+        otpRequest.put("otp_number", otpCode);
+        otpRequest.put("version_code", "");
         otpRequest.put("device_id", LoginActivity.deviceID);
         otpRequest.put("fcm_code", " ");
         otpRequest.put("mobile_number", LoginActivity.userMobileNumber);
-        //otpRequest.put("", deviceName);
+        otpRequest.put("mobile_brand", deviceName);
         otpRequest.put("contat_list", json_array.toString());
-        */loadJSONOTP();
+        loadJSONOTP();
 
-        //String response = projectRepository.get_all_articles(otpRequest, 1);
 
-       /* if (response != null) {
-            Toast.makeText(OTPActivity.this, response, Toast.LENGTH_SHORT).show();
-
-            Intent intent = new Intent(OTPActivity.this, RegistrationActivity.class);
-            startActivity(intent);
-
-        } else {
-            Toast.makeText(OTPActivity.this, "Invalid OTP ", Toast.LENGTH_SHORT).show();
-        }
-*/
     }
 
     public void loadJSONOTP() {
@@ -190,21 +161,20 @@ public class OTPActivity extends AppCompatActivity implements View.OnKeyListener
             Client Client = new Client();
             InterfaceApi apiService =
                     Client.getClient().create(InterfaceApi.class);
-            Call<JsonElement> call = apiService.getArticles(otpRequest);
-            call.enqueue(new Callback<JsonElement>() {
+            Call<JsonObject> call = apiService.getArticles(otpRequest);
+            call.enqueue(new Callback<JsonObject>() {
                 @Override
-                public void onResponse(Call<JsonElement> call, Response<JsonElement> response) {
-
-                    Intent intent = new Intent(OTPActivity.this, RegistrationActivity.class);
-                    startActivity(intent);
+                public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
 
                     Toast.makeText(OTPActivity.this, response.body().toString(), Toast.LENGTH_LONG).show();
                     Log.d("LoginActivity", response.body().toString());
 
+                    Intent intent = new Intent(OTPActivity.this, RegistrationActivity.class);
+                    startActivity(intent);
                 }
 
                 @Override
-                public void onFailure(Call<JsonElement> call, Throwable t) {
+                public void onFailure(Call<JsonObject> call, Throwable t) {
                     //Log.d("Error", t.getMessage());
                     Toast.makeText(OTPActivity.this, t.getMessage(), Toast.LENGTH_LONG).show();
 
@@ -222,32 +192,13 @@ public class OTPActivity extends AppCompatActivity implements View.OnKeyListener
     @Override
     public void onBackPressed() {
 
-        // Write your code here
-
         Intent intent = new Intent(this, LoginActivity.class);
         startActivity(intent);
 
         super.onBackPressed();
     }
 
-    /*// Method to get the contactList
-        public void getContactsIntoArrayList(){
 
-            *//*cursor = getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null,null, null, null);
-
-        while (cursor.moveToNext()) {
-
-            name = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
-
-            phonenumber = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-
-            StoreContacts.add(name + " "  + ":" + " " + phonenumber);
-        }
-        for (int i=0;i<StoreContacts.size();i++){Log.d("OTPActivity",StoreContacts.get(i));}
-
-        cursor.close();*//*
-
-    }*/
 // requesting runtime permission to read the contact list.
     private void contactList() {
 
@@ -382,5 +333,65 @@ public class OTPActivity extends AppCompatActivity implements View.OnKeyListener
     public void onPause() {
         super.onPause();
         LocalBroadcastManager.getInstance(this).unregisterReceiver(receiver);
+    }
+
+    //method to calculate device scree and other details
+    public void getDeviceDetails(){
+        String versionName="";
+        int versionCode=0;
+        float height=0;
+        float width=0;
+        double screenInches=0;
+
+        try
+        {
+            PackageInfo packageInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
+            versionName = packageInfo.versionName;
+            versionCode = packageInfo.versionCode;
+        }
+        catch (PackageManager.NameNotFoundException e)
+        {
+            e.printStackTrace();
+        }
+
+        try
+        {
+            DisplayMetrics displayMetrics = new DisplayMetrics();
+            WindowManager windowmanager = (WindowManager) getApplicationContext().getSystemService(Context.WINDOW_SERVICE);
+            windowmanager.getDefaultDisplay().getMetrics(displayMetrics);
+            height = Math.round(displayMetrics.heightPixels / displayMetrics.density);
+            width = Math.round(displayMetrics.widthPixels / displayMetrics.density);
+        }
+        catch (Exception e)
+        {
+
+        }
+
+        try
+        {
+            DisplayMetrics dm = new DisplayMetrics();
+            getWindowManager().getDefaultDisplay().getMetrics(dm);
+            int width1=dm.widthPixels;
+            int height1=dm.heightPixels;
+            int dens=dm.densityDpi;
+            double wi=(double)width1/(double)dens;
+            double hi=(double)height1/(double)dens;
+            double x = Math.pow(wi,2);
+            double y = Math.pow(hi,2);
+            screenInches = Math.sqrt(x+y);
+        }
+        catch (Exception e)
+        {
+
+        }
+
+
+        user_device_details = "Device Name : " + Build.BRAND +" "+ android.os.Build.MODEL
+                + "\nAndroid OS Version : " +Build.VERSION.RELEASE
+                + "\nApp Version Code : " +versionCode
+                + "\nApp Version Name : " +versionName
+                + "\nWidth(DP) : " +width
+                + "\nHeight(DP) : " +height
+                + "\nScreen(Inches) : " +screenInches;
     }
 }

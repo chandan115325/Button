@@ -9,15 +9,14 @@ import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.wealthdoctor.R;
 import com.wealthdoctor.circularButton.CircularProgressButton;
 import com.wealthdoctor.otp.OTPActivity;
@@ -35,36 +34,23 @@ public class LoginActivity extends AppCompatActivity
         implements ActivityCompat.OnRequestPermissionsResultCallback, View.OnClickListener, View.OnKeyListener {
 
     public static final String TAG = "LoginActivity";
-
     public int requestCode = 1;
-
     public static final String MOBILE_NUMBER = "mobile number";
-
     public static String userMobileNumber;
-
     private String userCountryCode;
-
     private TextInputEditText countryCodeEditText;
-
     private TextInputEditText mobileNumberEditText;
-
-    // private ProjectRepository projectRepository = ProjectRepository.getInstance();
-
     private Map<String, String> mobileData;
-
     private static final int PERMISSION_REQUEST_SMS = 0;
-
     private static final int PERMISSION_REQUEST_READ_PHONE_STATE = 1;
-
     private View mLayout;
-
+    private int count = 0;
     public static String deviceID;
-
-
     private Button submitButton;
-
     private CircularProgressButton circularProgressButton;
-    private int progress = 0;
+    private JsonElement status;
+
+    /* private int progress = 0;
     private TextView percentageTV, progressAmountTV;
     public static final int sweepDuration = 5000;
     private static final String MANUAL_PROGRESS_AMOUNT_KEY = "manualProgressAmount";
@@ -74,15 +60,13 @@ public class LoginActivity extends AppCompatActivity
     private boolean hasConfigurarationChanged = false;
     private String response;
 
-    TelephonyManager telephonyManager;
+    TelephonyManager telephonyManager;*/
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         Log.i("LoginActivity", "Giris1");
-
-        //submitButton = (Button)findViewById(R.id.submitButton);
 
         countryCodeEditText = (TextInputEditText) findViewById(R.id.country_code_edittext);
         mobileNumberEditText = (TextInputEditText) findViewById(R.id.mobile_number_edittext);
@@ -114,7 +98,8 @@ public class LoginActivity extends AppCompatActivity
         userMobileNumber = mobileNumberEditText.getText().toString();
 
 
-        if ((userMobileNumber.length() == 10)) {
+        if ((userMobileNumber.length() == 10) && count ==0) {
+            count++;
             circularProgressButton.setIndeterminateProgressMode(true);
             circularProgressButton.setStrokeColor(ContextCompat.getColor(this, R.color.colorStroke));
             if (circularProgressButton.isIdle()) {
@@ -125,8 +110,9 @@ public class LoginActivity extends AppCompatActivity
             //circularProgressButton.showCancel();
         }*/
             mobileData = new HashMap<>();
-            // mobileData.put("mobile_number", userMobileNumber);
-            //mobileData.put("device_id", deviceID);
+            //Todo to set the request data in map
+            mobileData.put("mobile_number", userMobileNumber);
+            mobileData.put("device_id", deviceID);
             loadJSON();
 
         } else {
@@ -168,7 +154,7 @@ public class LoginActivity extends AppCompatActivity
             // Permission is missing and must be requested.
             requestSMSSendingPermission();
         }
-        // END_INCLUDE(startCamera)
+
     }
 
     /**
@@ -218,20 +204,24 @@ public class LoginActivity extends AppCompatActivity
             Client Client = new Client();
             InterfaceApi apiService =
                     Client.getClient().create(InterfaceApi.class);
-            Call<JsonElement> call = apiService.getOTP(mobileData);
-            call.enqueue(new Callback<JsonElement>() {
+            Call<JsonObject> call = apiService.getOTP(mobileData);
+            call.enqueue(new Callback<JsonObject>() {
                 @Override
-                public void onResponse(Call<JsonElement> call, Response<JsonElement> response) {
+                public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
 
-                    // part=id,snippet&maxResults=20&channelId=UCCq1xDJMBRF61kiOgU90_kw&key=AIzaSyBRLPDbLkFnmUv13B-Hq9rmf0y7q8HOaVs
-                    showOTPScreen();
-                    Toast.makeText(LoginActivity.this, response.body().toString(), Toast.LENGTH_LONG).show();
-                    Log.d("LoginActivity", response.body().toString());
+                    JsonObject jsonObject = response.body();
+                    status = jsonObject.get("status");
+                    int statusResponse = ((int) status.getAsInt());
+                    if(statusResponse == 1) {
+                        showOTPScreen();
+                        Toast.makeText(LoginActivity.this, response.body().toString(), Toast.LENGTH_LONG).show();
+                        Log.d("LoginActivity", response.body().toString());
+                    }
 
                 }
 
                 @Override
-                public void onFailure(Call<JsonElement> call, Throwable t) {
+                public void onFailure(Call<JsonObject> call, Throwable t) {
                     //Log.d("Error", t.getMessage());
                     Toast.makeText(LoginActivity.this, t.getMessage(), Toast.LENGTH_LONG).show();
 
@@ -246,7 +236,7 @@ public class LoginActivity extends AppCompatActivity
 
     @Override
     protected void onPause() {
-       // circularProgressButton.setVisibility(View.GONE);
+        // circularProgressButton.setVisibility(View.GONE);
         super.onPause();
     }
 }
